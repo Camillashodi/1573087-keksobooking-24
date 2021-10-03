@@ -46,9 +46,9 @@ function getValuesFromArray (array) {
   const copyArray = array.slice();
   const selectedArray = [];
   const quantityOfValues = getRandomInteger(1, copyArray.length);
-  for (let i = 0; i < quantityOfValues; i++) {
+  for (let index = 0; index < quantityOfValues; index++) {
     const randomInteger = getRandomInteger(0, copyArray.length - 1);
-    selectedArray[i] = copyArray[randomInteger];
+    selectedArray[index] = copyArray[randomInteger];
     copyArray.splice(randomInteger, 1);
   }
   copyArray.length = 0;
@@ -96,8 +96,8 @@ function getObjAnnouncement (checkinTimes, checkoutTimes, feature, photo, type, 
 
 function getAnnouncements (arrayLength, checkinTimes, checkoutTimes, feature, photo, type) {
   const announcements = [];
-  for (let i = 0; i < arrayLength; i++) {
-    announcements[i] = getObjAnnouncement(checkinTimes, checkoutTimes, feature, photo, type, i);
+  for (let index = 0; index < arrayLength; index++) {
+    announcements[index] = getObjAnnouncement(checkinTimes, checkoutTimes, feature, photo, type, index);
   }
   return announcements;
 }
