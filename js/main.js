@@ -1,4 +1,8 @@
-import {checkins, checkouts, features, types, photos, quantityOfAnnouncements} from './initial-data.js';
-import {getAnnouncements} from './get-announcements.js';
+import {checkins, checkouts, features, types, photos} from './initial-data.js';
+import {getObjAnnouncement} from './get-announcement.js';
+import {createAnnouncementPopup} from './create-popup-announcement.js';
 
-getAnnouncements(quantityOfAnnouncements, checkins, checkouts, features, photos, types);
+const mapCamvas = document.querySelector('.map__canvas');
+const template = document.querySelector('#card').content.querySelector('.popup');
+
+createAnnouncementPopup(getObjAnnouncement(checkins, checkouts, features, photos, types, 7), mapCamvas, template);
