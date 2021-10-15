@@ -110,4 +110,4 @@ function createAnnouncementPopup (announcementObj, placeForAnnouncement, templat
   placeForAnnouncement.appendChild(announcementPopup);
 }
 
-export {createAnnouncementPopup};
+export { createAnnouncementPopup };

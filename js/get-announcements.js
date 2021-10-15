@@ -1,4 +1,4 @@
-import {getObjAnnouncement} from './get-announcement.js';
+import { getObjAnnouncement } from './get-announcement.js';
 
 function getAnnouncements (arrayLength, checkinTimes, checkoutTimes, feature, photo, type) {
   const announcements = [];
@@ -8,4 +8,4 @@ function getAnnouncements (arrayLength, checkinTimes, checkoutTimes, feature, ph
   return announcements;
 }
 
-export {getAnnouncements};
+export { getAnnouncements };

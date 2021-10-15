@@ -1,4 +1,4 @@
-import {getObjAuthor, getObjLocation, getObjOffer} from './create-data.js';
+import { getObjAuthor, getObjLocation, getObjOffer } from './create-data.js';
 
 function getObjAnnouncement (checkinTimes, checkoutTimes, feature, photo, type, indexNumber) {
   const location = getObjLocation();
@@ -9,4 +9,4 @@ function getObjAnnouncement (checkinTimes, checkoutTimes, feature, photo, type, 
   };
 }
 
-export {getObjAnnouncement};
+export { getObjAnnouncement };

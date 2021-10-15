@@ -1,4 +1,4 @@
-import {createAnnouncementPopup} from './create-popup-announcement.js';
+import { createAnnouncementPopup } from './create-popup-announcement.js';
 
 function createAnnouncementsFragment (announcementObjects, templateOfAnnoucement) {
   const announcementFragment = document.createDocumentFragment();
@@ -8,4 +8,4 @@ function createAnnouncementsFragment (announcementObjects, templateOfAnnoucement
   return announcementFragment;
 }
 
-export {createAnnouncementsFragment};
+export { createAnnouncementsFragment };
