@@ -48,4 +48,4 @@ function getValuesFromArray (array) {
   return selectedArray;
 }
 
-export {getRandomInteger, getRandomFloat, getValuesFromArray};
+export { getRandomInteger, getRandomFloat, getValuesFromArray };

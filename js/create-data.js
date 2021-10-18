@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomFloat, getValuesFromArray} from './utils-functions.js';
+import { getRandomInteger, getRandomFloat, getValuesFromArray } from './utils-functions.js';
 
 function getObjAuthor (indexnumber) {
   const userId = indexnumber + 1;
@@ -30,4 +30,4 @@ function getObjOffer (locationLat, locationlng, checkinTimes, checkoutTimes, fea
   };
 }
 
-export {getObjAuthor, getObjLocation, getObjOffer};
+export { getObjAuthor, getObjLocation, getObjOffer };
