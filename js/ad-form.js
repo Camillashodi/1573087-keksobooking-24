@@ -1,3 +1,5 @@
+import { disactivateForm, activateForm } from './form-control.js';
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
@@ -16,6 +18,10 @@ function checkRoomCapacity (rooms, capacity) {
 }
 
 const adForm = document.querySelector('.ad-form');
+
+disactivateForm(adForm);
+activateForm(adForm);
+
 
 const adFormTitleInput = adForm.querySelector('#title');
 

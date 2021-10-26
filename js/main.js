@@ -1,4 +1,5 @@
 import './ad-form.js';
+import './map-form.js';
 import { checkins, checkouts, features, types, photos, quantityOfAnnouncements } from './initial-data.js';
 import { getAnnouncements } from './get-announcements.js';
 import { createAnnouncementsFragment } from './create-announcements-fragment.js';
