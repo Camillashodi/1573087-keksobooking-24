@@ -1,4 +1,4 @@
-import { disactivateForm, activateForm } from './form-control.js';
+import { disactivateForm } from './form-control.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -20,7 +20,8 @@ function checkRoomCapacity (rooms, capacity) {
 const adForm = document.querySelector('.ad-form');
 
 disactivateForm(adForm);
-activateForm(adForm);
+
+const adFormAddress = adForm.querySelector('#address');
 
 
 const adFormTitleInput = adForm.querySelector('#title');
@@ -111,3 +112,5 @@ const adFormReset = adForm.querySelector('.ad-form__reset');
 adFormReset.addEventListener('click', () => {
   capacitySelect.setCustomValidity('');
 });
+
+export { adForm, adFormAddress };

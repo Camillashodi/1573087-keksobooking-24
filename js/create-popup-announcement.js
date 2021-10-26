@@ -1,4 +1,4 @@
-function createAnnouncementPopup (announcementObj, placeForAnnouncement, templateOfAnnoucement) {
+function createAnnouncementPopup (announcementObj, templateOfAnnoucement) {
   const namesOfTypes = {
     palace: 'Дворец',
     flat: 'Квартира',
@@ -107,7 +107,7 @@ function createAnnouncementPopup (announcementObj, placeForAnnouncement, templat
     announcementAvatar.remove();
   }
 
-  placeForAnnouncement.appendChild(announcementPopup);
+  return announcementPopup;
 }
 
 export { createAnnouncementPopup };
