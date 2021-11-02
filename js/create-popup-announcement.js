@@ -76,7 +76,7 @@ function createAnnouncementPopup (announcementObj, templateOfAnnoucement) {
       let isFeatureExist = false;
       const featureName = announcementPopupFeatures[i].className;
       for (let j = 0; j < coppyArray.length; j++) {
-        if (featureName.indexOf(coppyArray[j]) !== -1) {
+        if (featureName.indexOf(`--${coppyArray[j]}`) !== -1) {
           coppyArray.splice(j, 1);
           isFeatureExist = true;
           break;

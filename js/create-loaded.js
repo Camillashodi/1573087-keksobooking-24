@@ -15,6 +15,7 @@ function createLoaded (onSuccess, onError, host) {
     })
     .then((data) => {
       onSuccess(data);
+      return data;
     })
     .catch((err) => {
       onError(err);

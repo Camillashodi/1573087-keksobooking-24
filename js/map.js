@@ -1,6 +1,6 @@
 import { activateForm } from './form-control.js';
 import { adForm, adFormAddress } from './ad-form.js';
-import { mapForm } from './map-form.js';
+import { mapForm, mapFormSelects, mapFormCheckboxes } from './map-form.js';
 //import { checkins, checkouts, features, types, photos, quantityOfAnnouncements } from './initial-data.js';
 //import { getAnnouncements } from './get-announcements.js';
 import { createAnnouncementPopup } from './create-popup-announcement.js';
@@ -9,8 +9,24 @@ import { createLoaded } from './create-loaded.js';
 const PIN_SIZE = 40;
 const MAIN_PIN_SIZE = 52;
 const DATA_HOST = 'https://24.javascript.pages.academy/keksobooking/data';
+const QUANTITY_OF_MARKERS = 10;
 const template = document.querySelector('#card').content.querySelector('.popup');
 const map = L.map('map-canvas');
+const markerGroup = L.layerGroup().addTo(map);
+const chosenAnnouncementsSettings = {
+  type: 'any',
+  price: 'any',
+  rooms: 'any',
+  guests: 'any',
+  features: {
+    wifi: false,
+    dishwasher: false,
+    parking: false,
+    washer: false,
+    elevator: false,
+    conditioner: false,
+  },
+};
 
 function showErrPopup (err) {
   const errMapPopur = document.createElement('div');
@@ -22,7 +38,8 @@ function showErrPopup (err) {
 }
 
 function createMarkers (markerDataObjects) {
-  markerDataObjects.forEach((markerData) => {
+  const remainingObjects = markerDataObjects.slice(0, QUANTITY_OF_MARKERS);
+  remainingObjects.forEach((markerData) => {
     const {lat, lng} = markerData.location;
 
     const icon = L.icon({
@@ -42,9 +59,49 @@ function createMarkers (markerDataObjects) {
     );
 
     marker
-      .addTo(map)
+      .addTo(markerGroup)
       .bindPopup(createAnnouncementPopup(markerData, template));
   });
+}
+
+function filterAnnouncement (announcementObject) {
+  let isAnnouncementSuitable = true;
+  if (chosenAnnouncementsSettings.type !== 'any' && announcementObject.offer.type !== chosenAnnouncementsSettings.type) {
+    isAnnouncementSuitable = false;
+  }
+  switch (chosenAnnouncementsSettings.price) {
+    case 'any':
+      break;
+    case 'middle':
+      if (announcementObject.offer.price < 10000 || announcementObject.offer.price > 50000) {
+        isAnnouncementSuitable = false;
+      }
+      break;
+    case 'low':
+      if (announcementObject.offer.price >= 10000) {
+        isAnnouncementSuitable = false;
+      }
+      break;
+    case 'high':
+      if (announcementObject.offer.price <= 50000) {
+        isAnnouncementSuitable = false;
+      }
+      break;
+  }
+  if (chosenAnnouncementsSettings.rooms !== 'any' && announcementObject.offer.rooms !== (+chosenAnnouncementsSettings.rooms)) {
+    isAnnouncementSuitable = false;
+  }
+  if (chosenAnnouncementsSettings.guests !== 'any' && announcementObject.offer.guests !== (+chosenAnnouncementsSettings.guests)) {
+    isAnnouncementSuitable = false;
+  }
+  for (const key in chosenAnnouncementsSettings.features) {
+    if (chosenAnnouncementsSettings.features[key]) {
+      if (!announcementObject.offer.features || !announcementObject.offer.features.includes(key)) {
+        isAnnouncementSuitable = false;
+      }
+    }
+  }
+  return isAnnouncementSuitable;
 }
 
 map.on('load', () => {
@@ -87,6 +144,41 @@ mainPinMarker.on('moveend', (evt) => {
   adFormAddress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
 });
 
-createLoaded(createMarkers, showErrPopup, DATA_HOST);
+createLoaded(createMarkers, showErrPopup, DATA_HOST)
+  .then((data) => {
+    //console.log(data);
+    mapFormSelects.forEach((select) => {
+      select.addEventListener('change', (evt) => {
+        const selectedProrety = evt.target.name.slice(8);
+        chosenAnnouncementsSettings[selectedProrety] = evt.target.value;
+        const result = data.filter((element) => filterAnnouncement(element));
+        markerGroup.clearLayers();
+        createMarkers(result);
+      });
+    });
+    mapFormCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', (evt) => {
+        const selectedProrety = evt.target.value;
+        //console.log(selectedProrety);
+        chosenAnnouncementsSettings.features[selectedProrety] = evt.target.checked;
+        //console.log(chosenAnnouncementsSettings);
+        const result = data.filter((element) => filterAnnouncement(element));
+        markerGroup.clearLayers();
+        createMarkers(result);
+      });
+    });
+  });
+/*
+const someText = 'hi';
+function consText (text) {
+  console.log(text);
+}
+const listener = function (evt) {
+  console.log(evt.target);
+  consText (someText);
+  document.removeEventListener('click', listener);
+};
+
+document.addEventListener('click', listener);*/
 
 export { map, mainPinMarker };
