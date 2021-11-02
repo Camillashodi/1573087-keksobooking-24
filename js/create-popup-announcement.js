@@ -70,7 +70,7 @@ function createAnnouncementPopup (announcementObj, templateOfAnnoucement) {
 
   const announcementPopupFeatureList = announcementPopup.querySelector('.popup__features');
   const announcementPopupFeatures = announcementPopupFeatureList.querySelectorAll('.popup__feature');
-  if (announcementObj.offer.features.length) {
+  if (announcementObj.offer.features && announcementObj.offer.features.length) {
     const coppyArray = announcementObj.offer.features.slice();
     for (let i = 0; i < announcementPopupFeatures.length; i++) {
       let isFeatureExist = false;
@@ -92,13 +92,17 @@ function createAnnouncementPopup (announcementObj, templateOfAnnoucement) {
   }
 
   const announcementPopupPhotos = announcementPopup.querySelector('.popup__photos');
-  const photoElement = announcementPopupPhotos.querySelector('.popup__photo').cloneNode(true);
-  announcementPopupPhotos.querySelector('.popup__photo').remove();
-  announcementObj.offer.photos.forEach((photo) => {
-    const announcementPopupPhoto = photoElement.cloneNode(true);
-    announcementPopupPhoto.setAttribute('src', photo);
-    announcementPopupPhotos.appendChild(announcementPopupPhoto);
-  });
+  if (announcementObj.offer.photos) {
+    const photoElement = announcementPopupPhotos.querySelector('.popup__photo').cloneNode(true);
+    announcementPopupPhotos.querySelector('.popup__photo').remove();
+    announcementObj.offer.photos.forEach((photo) => {
+      const announcementPopupPhoto = photoElement.cloneNode(true);
+      announcementPopupPhoto.setAttribute('src', photo);
+      announcementPopupPhotos.appendChild(announcementPopupPhoto);
+    });
+  } else {
+    announcementPopupPhotos.querySelector('.popup__photo').remove();
+  }
 
   const announcementAvatar = announcementPopup.querySelector('.popup__avatar');
   if (announcementObj.author.avatar) {

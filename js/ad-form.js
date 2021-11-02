@@ -1,8 +1,16 @@
 import { disactivateForm } from './form-control.js';
+import { mapForm } from './map-form.js';
+import { map, mainPinMarker } from './map.js';
+//import { resetAllSettings } from './reset-all-settings.js';
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
+const RECEIVING_HOST = 'https://24.javascript.pages.academy/keksobooking';
+const adForm = document.querySelector('.ad-form');
+const adFormAddress = adForm.querySelector('#address');
+const successPopupTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorPopupTemplate = document.querySelector('#error').content.querySelector('.error');
 
 function checkRoomCapacity (rooms, capacity) {
   if ((+rooms) === 100 && (+capacity) !== 0) {
@@ -17,12 +25,56 @@ function checkRoomCapacity (rooms, capacity) {
   return '';
 }
 
-const adForm = document.querySelector('.ad-form');
+function resetAllSettings() {
+  adForm.reset();
+  mapForm.reset();
+
+  mainPinMarker.setLatLng({
+    lat: 35.68034,
+    lng: 139.76902,
+  });
+
+  map.setView({
+    lat: 35.68034,
+    lng: 139.76902,
+  }, 14);
+
+  adFormAddress.value = '35.68034, 139.76902';
+}
+
+function createAdFormPopup (popupTemplate) {
+  const adFormPopup = popupTemplate.cloneNode(true);
+  const popupButton = adFormPopup.querySelector('button');
+  function removeElement () {
+    adFormPopup.removeEventListener('click', removeElement);
+    document.removeEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        removeElement();
+      }
+    });
+    if (popupButton) {
+      popupButton.removeEventListener('click', removeElement);
+    }
+    adFormPopup.remove();
+  }
+
+  adFormPopup.addEventListener('click', removeElement);
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeElement();
+    }
+  });
+
+  if (popupButton) {
+    popupButton.addEventListener('click', removeElement);
+  }
+
+  document.body.appendChild(adFormPopup);
+}
 
 disactivateForm(adForm);
-
-const adFormAddress = adForm.querySelector('#address');
-
 
 const adFormTitleInput = adForm.querySelector('#title');
 
@@ -98,19 +150,42 @@ capacitySelect.addEventListener('change', () => {
 
 adForm.addEventListener('submit', (evt) => {
   const capacityCheck = checkRoomCapacity(roomNumberSelect.value, capacitySelect.value);
+  evt.preventDefault();
 
   if (capacityCheck.length !== 0) {
-    evt.preventDefault();
     capacitySelect.setCustomValidity(capacityCheck);
   } else {
     capacitySelect.setCustomValidity('');
+    const formData = new FormData(adForm);
+
+    fetch(
+      RECEIVING_HOST,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+      .then((response) => {
+        if (response.ok) {
+          createAdFormPopup(successPopupTemplate);
+          resetAllSettings();
+          return;
+        }
+
+        throw new Error(`${response.status} ${response.statusText}`);
+      })
+      .catch(() => {
+        createAdFormPopup(errorPopupTemplate);
+      });
   }
 });
 
 const adFormReset = adForm.querySelector('.ad-form__reset');
 
-adFormReset.addEventListener('click', () => {
+adFormReset.addEventListener('click', (evt) => {
   capacitySelect.setCustomValidity('');
+  evt.preventDefault();
+  resetAllSettings();
 });
 
 export { adForm, adFormAddress };
