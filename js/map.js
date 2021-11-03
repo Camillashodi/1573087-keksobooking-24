@@ -38,8 +38,8 @@ function showErrPopup (err) {
 }
 
 function createMarkers (markerDataObjects) {
-  const remainingObjects = markerDataObjects.slice(0, QUANTITY_OF_MARKERS);
-  remainingObjects.forEach((markerData) => {
+  //const remainingObjects = markerDataObjects.slice(0, QUANTITY_OF_MARKERS);
+  markerDataObjects.slice(0, QUANTITY_OF_MARKERS).forEach((markerData) => {
     const {lat, lng} = markerData.location;
 
     const icon = L.icon({
@@ -147,11 +147,12 @@ mainPinMarker.on('moveend', (evt) => {
 createLoaded(createMarkers, showErrPopup, DATA_HOST)
   .then((data) => {
     //console.log(data);
+    const remainingObjects = data.slice(0, QUANTITY_OF_MARKERS);
     mapFormSelects.forEach((select) => {
       select.addEventListener('change', (evt) => {
         const selectedProrety = evt.target.name.slice(8);
         chosenAnnouncementsSettings[selectedProrety] = evt.target.value;
-        const result = data.filter((element) => filterAnnouncement(element));
+        const result = remainingObjects.filter((element) => filterAnnouncement(element));
         markerGroup.clearLayers();
         createMarkers(result);
       });
@@ -162,10 +163,24 @@ createLoaded(createMarkers, showErrPopup, DATA_HOST)
         //console.log(selectedProrety);
         chosenAnnouncementsSettings.features[selectedProrety] = evt.target.checked;
         //console.log(chosenAnnouncementsSettings);
-        const result = data.filter((element) => filterAnnouncement(element));
+        const result = remainingObjects.filter((element) => filterAnnouncement(element));
         markerGroup.clearLayers();
         createMarkers(result);
       });
+    });
+    mapForm.addEventListener('reset', () => {
+      chosenAnnouncementsSettings.type = 'any',
+      chosenAnnouncementsSettings.price = 'any',
+      chosenAnnouncementsSettings.rooms = 'any',
+      chosenAnnouncementsSettings.guests = 'any',
+      chosenAnnouncementsSettings.features.wifi = false,
+      chosenAnnouncementsSettings.features.dishwasher = false,
+      chosenAnnouncementsSettings.features.parking = false,
+      chosenAnnouncementsSettings.features.washer = false,
+      chosenAnnouncementsSettings.features.elevator = false,
+      chosenAnnouncementsSettings.features.conditioner = false,
+      markerGroup.clearLayers();
+      createMarkers(remainingObjects);
     });
   });
 /*

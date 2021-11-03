@@ -46,29 +46,34 @@ function createAdFormPopup (popupTemplate) {
   const adFormPopup = popupTemplate.cloneNode(true);
   const popupButton = adFormPopup.querySelector('button');
   function removeElement () {
-    adFormPopup.removeEventListener('click', removeElement);
-    document.removeEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        removeElement();
-      }
-    });
+    adFormPopup.removeEventListener('click', onPopupClick);
+    document.removeEventListener('keydown', onEscKeyDown);
     if (popupButton) {
-      popupButton.removeEventListener('click', removeElement);
+      popupButton.removeEventListener('click', onPopupButtonClick);
     }
     adFormPopup.remove();
   }
 
-  adFormPopup.addEventListener('click', removeElement);
-  document.addEventListener('keydown', (evt) => {
+  function onPopupClick () {
+    removeElement();
+  }
+
+  function onPopupButtonClick () {
+    removeElement();
+  }
+
+  function onEscKeyDown (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       removeElement();
     }
-  });
+  }
+
+  adFormPopup.addEventListener('click', onPopupClick);
+  document.addEventListener('keydown', onEscKeyDown);
 
   if (popupButton) {
-    popupButton.addEventListener('click', removeElement);
+    popupButton.addEventListener('click', onPopupButtonClick);
   }
 
   document.body.appendChild(adFormPopup);
@@ -78,38 +83,54 @@ disactivateForm(adForm);
 
 const adFormTitleInput = adForm.querySelector('#title');
 
-adFormTitleInput.addEventListener('input', () => {
-  const valueLength = adFormTitleInput.value.length;
+function checkTitleValidity (titleInput) {
+  const valueLength = titleInput.value.length;
 
   if (valueLength < MIN_TITLE_LENGTH && valueLength !== 0) {
-    adFormTitleInput.setCustomValidity(`Не меньше ${MIN_TITLE_LENGTH} символов. Сейчас: ${valueLength}.`);
+    titleInput.setCustomValidity(`Не меньше ${MIN_TITLE_LENGTH} символов. Сейчас: ${valueLength}.`);
   } else if (valueLength > MAX_TITLE_LENGTH) {
-    adFormTitleInput.setCustomValidity(`Не больше ${MAX_TITLE_LENGTH} символов. Сейчас: ${valueLength}.`);
+    titleInput.setCustomValidity(`Не больше ${MAX_TITLE_LENGTH} символов. Сейчас: ${valueLength}.`);
   } else if (valueLength === 0) {
-    adFormTitleInput.setCustomValidity('Заголовок обязателен в объявлении.');
+    titleInput.setCustomValidity('Заголовок обязателен в объявлении.');
   } else {
-    adFormTitleInput.setCustomValidity('');
+    titleInput.setCustomValidity('');
   }
+}
 
+adFormTitleInput.addEventListener('input', () => {
+  adFormTitleInput.style.borderColor = '';
+  checkTitleValidity(adFormTitleInput);
   adFormTitleInput.reportValidity();
 });
 
 adFormTitleInput.addEventListener('invalid', () => {
-  if (adFormTitleInput.validity.tooShort) {
-    adFormTitleInput.setCustomValidity(`Не меньше ${MIN_TITLE_LENGTH} символов. Сейчас: ${adFormTitleInput.value.length}.`);
-  } else if (adFormTitleInput.validity.tooLong) {
-    adFormTitleInput.setCustomValidity(`Не больше ${MAX_TITLE_LENGTH} символов. Сейчас: ${adFormTitleInput.value.length}.`);
-  } else if (adFormTitleInput.validity.valueMissing) {
-    adFormTitleInput.setCustomValidity('Заголовок обязателен в объявлении.');
-  } else {
-    adFormTitleInput.setCustomValidity('');
-  }
+  checkTitleValidity(adFormTitleInput);
 });
 
 const adFormPriceInput = adForm.querySelector('#price');
+const typeSelect = adForm.querySelector('#type');
+const typeToMinPriceRatio = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
+adFormPriceInput.setAttribute('min', typeToMinPriceRatio[typeSelect.value]);
+adFormPriceInput.setAttribute('placeholder', typeToMinPriceRatio[typeSelect.value]);
+
+typeSelect.addEventListener('change', () => {
+  adFormPriceInput.setAttribute('placeholder', typeToMinPriceRatio[typeSelect.value]);
+  adFormPriceInput.setAttribute('min', typeToMinPriceRatio[typeSelect.value]);
+  if (adFormPriceInput.value) {
+    adFormPriceInput.reportValidity();
+  }
+});
 
 adFormPriceInput.addEventListener('input', () => {
   const valueInput = adFormPriceInput.value;
+  adFormPriceInput.style.borderColor = '';
 
   if (valueInput > MAX_PRICE) {
     adFormPriceInput.setCustomValidity(`Цена за ночь не больше ${MAX_PRICE} руб.`);
@@ -132,20 +153,49 @@ adFormPriceInput.addEventListener('invalid', () => {
   }
 });
 
+function synchronizeElements (changedElement, elementForSync) {
+  elementForSync.value = changedElement.value;
+}
+
+const timeinSelect = adForm.querySelector('#timein');
+const timeoutSelect = adForm.querySelector('#timeout');
+
+timeinSelect.addEventListener('change', () => {
+  synchronizeElements(timeinSelect, timeoutSelect);
+});
+
+timeoutSelect.addEventListener('change', () => {
+  synchronizeElements(timeoutSelect, timeinSelect);
+});
+
 const roomNumberSelect = adForm.querySelector('#room_number');
 const capacitySelect = adForm.querySelector('#capacity');
-capacitySelect.value = 1;
 
 roomNumberSelect.addEventListener('change', () => {
+  capacitySelect.style.borderColor = '';
   capacitySelect.setCustomValidity(checkRoomCapacity(roomNumberSelect.value, capacitySelect.value));
 
   capacitySelect.reportValidity();
 });
 
 capacitySelect.addEventListener('change', () => {
+  capacitySelect.style.borderColor = '';
   capacitySelect.setCustomValidity(checkRoomCapacity(roomNumberSelect.value, capacitySelect.value));
 
   capacitySelect.reportValidity();
+});
+
+const adFormButtonSubmit = adForm.querySelector('.ad-form__submit');
+adFormButtonSubmit.addEventListener('click', () => {
+  if (!capacitySelect.reportValidity()) {
+    capacitySelect.style.borderColor = 'red';
+  }
+  if (!adFormPriceInput.reportValidity()) {
+    adFormPriceInput.style.borderColor = 'red';
+  }
+  if (!adFormTitleInput.reportValidity()) {
+    adFormTitleInput.style.borderColor = 'red';
+  }
 });
 
 adForm.addEventListener('submit', (evt) => {
@@ -186,6 +236,9 @@ adFormReset.addEventListener('click', (evt) => {
   capacitySelect.setCustomValidity('');
   evt.preventDefault();
   resetAllSettings();
+  capacitySelect.style.borderColor = '';
+  adFormPriceInput.style.borderColor = '';
+  adFormTitleInput.style.borderColor = '';
 });
 
 export { adForm, adFormAddress };
