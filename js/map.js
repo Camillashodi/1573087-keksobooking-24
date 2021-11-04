@@ -5,11 +5,14 @@ import { mapForm, mapFormSelects, mapFormCheckboxes } from './map-form.js';
 //import { getAnnouncements } from './get-announcements.js';
 import { createAnnouncementPopup } from './create-popup-announcement.js';
 import { createLoaded } from './create-loaded.js';
+import { debounce } from './utils/debounce.js';
 
 const PIN_SIZE = 40;
 const MAIN_PIN_SIZE = 52;
 const DATA_HOST = 'https://24.javascript.pages.academy/keksobooking/data';
 const QUANTITY_OF_MARKERS = 10;
+const TOKIO_CENTER_LAT = 35.68034;
+const TOKIO_CENTER_LNG = 139.76902;
 const template = document.querySelector('#card').content.querySelector('.popup');
 const map = L.map('map-canvas');
 const markerGroup = L.layerGroup().addTo(map);
@@ -106,13 +109,54 @@ function filterAnnouncement (announcementObject) {
 
 map.on('load', () => {
   activateForm(adForm);
-  activateForm(mapForm);
-  adFormAddress.value = '35.68034, 139.76902';
+  adFormAddress.value = `${TOKIO_CENTER_LAT}, ${TOKIO_CENTER_LNG}`;
+  createLoaded(createMarkers, showErrPopup, DATA_HOST)
+    .then((data) => {
+      if (!data) {
+        throw new Error('Did not get DATA from host');
+      }
+      activateForm(mapForm);
+      const remainingObjects = data.slice(0, QUANTITY_OF_MARKERS);
+      const createChosenMarkers = debounce(() => {
+        const result = remainingObjects.filter((element) => filterAnnouncement(element));
+        markerGroup.clearLayers();
+        createMarkers(result);
+      });
+      mapFormSelects.forEach((select) => {
+        select.addEventListener('change', (evt) => {
+          const selectedProrety = evt.target.name.slice(8);
+          chosenAnnouncementsSettings[selectedProrety] = evt.target.value;
+          createChosenMarkers();
+        });
+      });
+      mapFormCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener('change', (evt) => {
+          const selectedProrety = evt.target.value;
+          chosenAnnouncementsSettings.features[selectedProrety] = evt.target.checked;
+          createChosenMarkers();
+        });
+      });
+      mapForm.addEventListener('reset', () => {
+        chosenAnnouncementsSettings.type = 'any',
+        chosenAnnouncementsSettings.price = 'any',
+        chosenAnnouncementsSettings.rooms = 'any',
+        chosenAnnouncementsSettings.guests = 'any',
+        chosenAnnouncementsSettings.features.wifi = false,
+        chosenAnnouncementsSettings.features.dishwasher = false,
+        chosenAnnouncementsSettings.features.parking = false,
+        chosenAnnouncementsSettings.features.washer = false,
+        chosenAnnouncementsSettings.features.elevator = false,
+        chosenAnnouncementsSettings.features.conditioner = false,
+        markerGroup.clearLayers();
+        createMarkers(remainingObjects);
+      });
+    })
+    .catch();
 })
   .setView({
-    lat: 35.68034,
-    lng: 139.76902,
-  }, 14);
+    lat: TOKIO_CENTER_LAT,
+    lng: TOKIO_CENTER_LNG,
+  }, 12);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -129,8 +173,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: 35.68034,
-    lng: 139.76902,
+    lat: TOKIO_CENTER_LAT,
+    lng: TOKIO_CENTER_LNG,
   },
   {
     draggable: true,
@@ -143,7 +187,7 @@ mainPinMarker.addTo(map);
 mainPinMarker.on('moveend', (evt) => {
   adFormAddress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
 });
-
+/*
 createLoaded(createMarkers, showErrPopup, DATA_HOST)
   .then((data) => {
     //console.log(data);
@@ -183,6 +227,8 @@ createLoaded(createMarkers, showErrPopup, DATA_HOST)
       createMarkers(remainingObjects);
     });
   });
+
+*/
 /*
 const someText = 'hi';
 function consText (text) {
@@ -196,4 +242,4 @@ const listener = function (evt) {
 
 document.addEventListener('click', listener);*/
 
-export { map, mainPinMarker };
+export { map, mainPinMarker, TOKIO_CENTER_LAT, TOKIO_CENTER_LNG };

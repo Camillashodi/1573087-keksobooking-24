@@ -1,7 +1,7 @@
 import { disactivateForm } from './form-control.js';
 import { mapForm } from './map-form.js';
-import { map, mainPinMarker } from './map.js';
-//import { resetAllSettings } from './reset-all-settings.js';
+import { map, mainPinMarker, TOKIO_CENTER_LAT, TOKIO_CENTER_LNG } from './map.js';
+
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -11,6 +11,9 @@ const adForm = document.querySelector('.ad-form');
 const adFormAddress = adForm.querySelector('#address');
 const successPopupTemplate = document.querySelector('#success').content.querySelector('.success');
 const errorPopupTemplate = document.querySelector('#error').content.querySelector('.error');
+const preview = adForm.querySelector('.ad-form-header__preview img');
+const previewSampleSrc = preview.src;
+const previewContainer = adForm.querySelector('.ad-form__photo');
 
 function checkRoomCapacity (rooms, capacity) {
   if ((+rooms) === 100 && (+capacity) !== 0) {
@@ -39,7 +42,9 @@ function resetAllSettings() {
     lng: 139.76902,
   }, 14);
 
-  adFormAddress.value = '35.68034, 139.76902';
+  adFormAddress.value = `${TOKIO_CENTER_LAT}, ${TOKIO_CENTER_LNG}`;
+  preview.src = previewSampleSrc;
+  previewContainer.removeChild(previewContainer.firstChild);
 }
 
 function createAdFormPopup (popupTemplate) {
