@@ -33,14 +33,14 @@ function resetAllSettings() {
   mapForm.reset();
 
   mainPinMarker.setLatLng({
-    lat: 35.68034,
-    lng: 139.76902,
+    lat: TOKIO_CENTER_LAT,
+    lng: TOKIO_CENTER_LNG,
   });
 
   map.setView({
-    lat: 35.68034,
-    lng: 139.76902,
-  }, 14);
+    lat: TOKIO_CENTER_LAT,
+    lng: TOKIO_CENTER_LNG,
+  }, 12);
 
   adFormAddress.value = `${TOKIO_CENTER_LAT}, ${TOKIO_CENTER_LNG}`;
   preview.src = previewSampleSrc;

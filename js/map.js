@@ -1,8 +1,6 @@
 import { activateForm } from './form-control.js';
 import { adForm, adFormAddress } from './ad-form.js';
 import { mapForm, mapFormSelects, mapFormCheckboxes } from './map-form.js';
-//import { checkins, checkouts, features, types, photos, quantityOfAnnouncements } from './initial-data.js';
-//import { getAnnouncements } from './get-announcements.js';
 import { createAnnouncementPopup } from './create-popup-announcement.js';
 import { createLoaded } from './create-loaded.js';
 import { debounce } from './utils/debounce.js';
@@ -41,12 +39,11 @@ function showErrPopup (err) {
 }
 
 function createMarkers (markerDataObjects) {
-  //const remainingObjects = markerDataObjects.slice(0, QUANTITY_OF_MARKERS);
   markerDataObjects.slice(0, QUANTITY_OF_MARKERS).forEach((markerData) => {
     const {lat, lng} = markerData.location;
 
     const icon = L.icon({
-      iconUrl: '/img/pin.svg',
+      iconUrl: 'img/pin.svg',
       iconSize: [PIN_SIZE, PIN_SIZE],
       iconAnchor: [(PIN_SIZE / 2), PIN_SIZE],
     });
@@ -187,59 +184,5 @@ mainPinMarker.addTo(map);
 mainPinMarker.on('moveend', (evt) => {
   adFormAddress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
 });
-/*
-createLoaded(createMarkers, showErrPopup, DATA_HOST)
-  .then((data) => {
-    //console.log(data);
-    const remainingObjects = data.slice(0, QUANTITY_OF_MARKERS);
-    mapFormSelects.forEach((select) => {
-      select.addEventListener('change', (evt) => {
-        const selectedProrety = evt.target.name.slice(8);
-        chosenAnnouncementsSettings[selectedProrety] = evt.target.value;
-        const result = remainingObjects.filter((element) => filterAnnouncement(element));
-        markerGroup.clearLayers();
-        createMarkers(result);
-      });
-    });
-    mapFormCheckboxes.forEach((checkbox) => {
-      checkbox.addEventListener('change', (evt) => {
-        const selectedProrety = evt.target.value;
-        //console.log(selectedProrety);
-        chosenAnnouncementsSettings.features[selectedProrety] = evt.target.checked;
-        //console.log(chosenAnnouncementsSettings);
-        const result = remainingObjects.filter((element) => filterAnnouncement(element));
-        markerGroup.clearLayers();
-        createMarkers(result);
-      });
-    });
-    mapForm.addEventListener('reset', () => {
-      chosenAnnouncementsSettings.type = 'any',
-      chosenAnnouncementsSettings.price = 'any',
-      chosenAnnouncementsSettings.rooms = 'any',
-      chosenAnnouncementsSettings.guests = 'any',
-      chosenAnnouncementsSettings.features.wifi = false,
-      chosenAnnouncementsSettings.features.dishwasher = false,
-      chosenAnnouncementsSettings.features.parking = false,
-      chosenAnnouncementsSettings.features.washer = false,
-      chosenAnnouncementsSettings.features.elevator = false,
-      chosenAnnouncementsSettings.features.conditioner = false,
-      markerGroup.clearLayers();
-      createMarkers(remainingObjects);
-    });
-  });
-
-*/
-/*
-const someText = 'hi';
-function consText (text) {
-  console.log(text);
-}
-const listener = function (evt) {
-  console.log(evt.target);
-  consText (someText);
-  document.removeEventListener('click', listener);
-};
-
-document.addEventListener('click', listener);*/
 
 export { map, mainPinMarker, TOKIO_CENTER_LAT, TOKIO_CENTER_LNG };
