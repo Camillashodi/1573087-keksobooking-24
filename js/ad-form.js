@@ -7,7 +7,7 @@ const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
 const RECEIVING_HOST = 'https://24.javascript.pages.academy/keksobooking';
-const typeToMinPriceRatio = {
+const TYPE_TO_MIN_PRICE_RATIO = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -123,12 +123,12 @@ adFormTitleInput.addEventListener('invalid', () => {
 const adFormPriceInput = adForm.querySelector('#price');
 const typeSelect = adForm.querySelector('#type');
 
-adFormPriceInput.setAttribute('min', typeToMinPriceRatio[typeSelect.value]);
-adFormPriceInput.setAttribute('placeholder', typeToMinPriceRatio[typeSelect.value]);
+adFormPriceInput.setAttribute('min', TYPE_TO_MIN_PRICE_RATIO[typeSelect.value]);
+adFormPriceInput.setAttribute('placeholder', TYPE_TO_MIN_PRICE_RATIO[typeSelect.value]);
 
 typeSelect.addEventListener('change', () => {
-  adFormPriceInput.setAttribute('placeholder', typeToMinPriceRatio[typeSelect.value]);
-  adFormPriceInput.setAttribute('min', typeToMinPriceRatio[typeSelect.value]);
+  adFormPriceInput.setAttribute('placeholder', TYPE_TO_MIN_PRICE_RATIO[typeSelect.value]);
+  adFormPriceInput.setAttribute('min', TYPE_TO_MIN_PRICE_RATIO[typeSelect.value]);
   if (adFormPriceInput.value) {
     adFormPriceInput.reportValidity();
   }

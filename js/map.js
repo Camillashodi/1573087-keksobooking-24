@@ -11,7 +11,7 @@ const DATA_HOST = 'https://24.javascript.pages.academy/keksobooking/data';
 const QUANTITY_OF_MARKERS = 10;
 const TOKIO_CENTER_LAT = 35.68034;
 const TOKIO_CENTER_LNG = 139.76902;
-const priceBoundariesForOptions = {
+const PRICE_BOUNDARIES_FOR_OPTIONS = {
   low: 10000,
   high: 50000,
 };
@@ -77,17 +77,17 @@ function filterAnnouncement (announcementObject) {
     case 'any':
       break;
     case 'middle':
-      if (announcementObject.offer.price < priceBoundariesForOptions.low || announcementObject.offer.price > priceBoundariesForOptions.high) {
+      if (announcementObject.offer.price < PRICE_BOUNDARIES_FOR_OPTIONS.low || announcementObject.offer.price > PRICE_BOUNDARIES_FOR_OPTIONS.high) {
         isAnnouncementSuitable = false;
       }
       break;
     case 'low':
-      if (announcementObject.offer.price >= priceBoundariesForOptions.low) {
+      if (announcementObject.offer.price >= PRICE_BOUNDARIES_FOR_OPTIONS.low) {
         isAnnouncementSuitable = false;
       }
       break;
     case 'high':
-      if (announcementObject.offer.price <= priceBoundariesForOptions.high) {
+      if (announcementObject.offer.price <= PRICE_BOUNDARIES_FOR_OPTIONS.high) {
         isAnnouncementSuitable = false;
       }
       break;
