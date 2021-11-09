@@ -1,4 +1,4 @@
-import { disactivateForm } from './form-control.js';
+import { deactivateForm } from './form-control.js';
 import { mapForm } from './map-form.js';
 import { map, mainPinMarker, TOKIO_CENTER_LAT, TOKIO_CENTER_LNG } from './map.js';
 
@@ -7,6 +7,13 @@ const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
 const RECEIVING_HOST = 'https://24.javascript.pages.academy/keksobooking';
+const typeToMinPriceRatio = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
 const adForm = document.querySelector('.ad-form');
 const adFormAddress = adForm.querySelector('#address');
 const successPopupTemplate = document.querySelector('#success').content.querySelector('.success');
@@ -14,6 +21,7 @@ const errorPopupTemplate = document.querySelector('#error').content.querySelecto
 const preview = adForm.querySelector('.ad-form-header__preview img');
 const previewSampleSrc = preview.src;
 const previewContainer = adForm.querySelector('.ad-form__photo');
+
 
 function checkRoomCapacity (rooms, capacity) {
   if ((+rooms) === 100 && (+capacity) !== 0) {
@@ -84,7 +92,7 @@ function createAdFormPopup (popupTemplate) {
   document.body.appendChild(adFormPopup);
 }
 
-disactivateForm(adForm);
+deactivateForm(adForm);
 
 const adFormTitleInput = adForm.querySelector('#title');
 
@@ -114,13 +122,6 @@ adFormTitleInput.addEventListener('invalid', () => {
 
 const adFormPriceInput = adForm.querySelector('#price');
 const typeSelect = adForm.querySelector('#type');
-const typeToMinPriceRatio = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
-};
 
 adFormPriceInput.setAttribute('min', typeToMinPriceRatio[typeSelect.value]);
 adFormPriceInput.setAttribute('placeholder', typeToMinPriceRatio[typeSelect.value]);

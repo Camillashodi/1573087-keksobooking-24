@@ -46,14 +46,14 @@ function createAnnouncementPopup (announcementObj, templateOfAnnoucement) {
 
   const announcementPopupCapacity = announcementPopup.querySelector('.popup__text--capacity');
   if (announcementObj.offer.rooms && announcementObj.offer.guests) {
-    const rommsString = announcementObj.offer.rooms.toString();
+    const roomsString = announcementObj.offer.rooms.toString();
     const guestsString = announcementObj.offer.guests.toString();
-    let textCapacity = `${rommsString} комнат`;
-    if ((+rommsString[rommsString.length - 1]) > 1 && (+rommsString[rommsString.length - 1]) < 5) {
-      textCapacity = `${rommsString} комнаты`;
+    let textCapacity = `${roomsString} комнат`;
+    if ((+roomsString[roomsString.length - 1]) > 1 && (+roomsString[roomsString.length - 1]) < 5) {
+      textCapacity = `${roomsString} комнаты`;
     }
-    if ((+rommsString[rommsString.length - 1]) === 1) {
-      textCapacity = `${rommsString} комната`;
+    if ((+roomsString[roomsString.length - 1]) === 1) {
+      textCapacity = `${roomsString} комната`;
     }
     announcementPopupCapacity.textContent = `${textCapacity} для ${announcementObj.offer.guests} гост${(+guestsString[guestsString.length - 1]) === 1 ? 'я' : 'ей'}`;
 

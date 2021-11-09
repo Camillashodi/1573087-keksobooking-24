@@ -1,4 +1,4 @@
-function disactivateForm (form) {
+function deactivateForm (form) {
   const interactiveFormElements = form.querySelectorAll('button, input, select, textarea');
   const formClass = form.classList[0];
   interactiveFormElements.forEach((element) => {
@@ -32,4 +32,4 @@ function activateForm(form) {
   }
 }
 
-export { disactivateForm, activateForm };
+export { deactivateForm, activateForm };

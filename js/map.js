@@ -11,6 +11,10 @@ const DATA_HOST = 'https://24.javascript.pages.academy/keksobooking/data';
 const QUANTITY_OF_MARKERS = 10;
 const TOKIO_CENTER_LAT = 35.68034;
 const TOKIO_CENTER_LNG = 139.76902;
+const priceBoundariesForOptions = {
+  low: 10000,
+  high: 50000,
+};
 const template = document.querySelector('#card').content.querySelector('.popup');
 const map = L.map('map-canvas');
 const markerGroup = L.layerGroup().addTo(map);
@@ -73,17 +77,17 @@ function filterAnnouncement (announcementObject) {
     case 'any':
       break;
     case 'middle':
-      if (announcementObject.offer.price < 10000 || announcementObject.offer.price > 50000) {
+      if (announcementObject.offer.price < priceBoundariesForOptions.low || announcementObject.offer.price > priceBoundariesForOptions.high) {
         isAnnouncementSuitable = false;
       }
       break;
     case 'low':
-      if (announcementObject.offer.price >= 10000) {
+      if (announcementObject.offer.price >= priceBoundariesForOptions.low) {
         isAnnouncementSuitable = false;
       }
       break;
     case 'high':
-      if (announcementObject.offer.price <= 50000) {
+      if (announcementObject.offer.price <= priceBoundariesForOptions.high) {
         isAnnouncementSuitable = false;
       }
       break;
